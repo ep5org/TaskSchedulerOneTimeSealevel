@@ -63,7 +63,8 @@ namespace TaskSchedulerOneTimeSealevel
         {
             SetupTheUI.SetupUI();
             InitializeIO.StartUp();
-            BusinessRules.ApplyBusinessRules();
+            if (BusinessRules.ApplyBusinessRules() != 0)
+                return -9;
             SelectedOutputs.TurnOnSelectedOutputs();        // This forces all outputs to OFF.
             InitializeIO.ShutDown();
             return 0;

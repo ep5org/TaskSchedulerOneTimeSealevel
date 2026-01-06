@@ -10,7 +10,7 @@ namespace TaskSchedulerOneTimeSealevel
         /// <summary>
         ///     This iterates once through all the records in the selected recipe. The database connection remains open until all records have been processed.
         /// </summary>
-        public static void ApplyBusinessRules()
+        public static int ApplyBusinessRules()
         {
             bool listRecords = true;
             string recipeNmbr = "1";
@@ -27,7 +27,7 @@ namespace TaskSchedulerOneTimeSealevel
             /// <remarks>
             ///     Provide a recipe containing time-correct event data to work with, for testing only.
             ///     This external process empties the database table used by this program and then fills it with new data. All events or steps
-            ///         are scheduled to occur within a short time after the program is started.
+            ///         are scheduled to occur within a short time after this program is started.
             ///     The data source thus created uses a single fixed date and time for each event.
             /// </remarks>
             Process CreateScheduleToRun = new();
@@ -46,7 +46,6 @@ namespace TaskSchedulerOneTimeSealevel
             connection.Open();
             using SqlCommand command = new($"select * from dbo.ControlEvent where recipeID = {recipeNmbr} order by recipeID, doAt", connection);
             SqlDataReader dataReader = command.ExecuteReader();
-            //_ = ReadKey(true);
             while (dataReader.Read() != false)
             {
                 recipeID = (int)dataReader["recipeID"];
@@ -67,8 +66,15 @@ namespace TaskSchedulerOneTimeSealevel
                     WriteLine("do at {0}\tchannel {1}\t{2}\t{3}", doAt.ToString("dddd dd MMMM yyyy  hh:mm:ss.fff"), channelNmbr, stepState, currentStatus);
                 }
                 counter++;
-                if (SingleStep.DoSingleStep(doAt, channelNmbr, stepState, digitalValue) == -9)
-                    return;
+                /// <remarks>
+                ///     This function call causes a single event to be implemented when the specified time is reached.
+                ///     It returns a SeaMAX errorcode, with success = 0.
+                /// </remarks>
+                int erratum = SingleStep.DoSingleStep(doAt, channelNmbr, stepState, digitalValue);
+                if (erratum < 0)
+                {
+                    return erratum;
+                }
                 // check for operator interrupt/quit
                 if (KeyAvailable)
                 {
@@ -86,7 +92,7 @@ namespace TaskSchedulerOneTimeSealevel
             dataReader.Close();
             connection.Close();
             WriteLine("This recipe contains {0} steps.", counter);
-            return;
+            return 0;
         }
     }
 }
