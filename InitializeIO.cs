@@ -1,9 +1,12 @@
 ﻿using static System.Console;
 using Sealevel;
-using static Sealevel.SeaMAX;
 
 namespace TaskSchedulerOneTimeSealevel
 {
+    /// <summary>
+    ///     This sets up the Sealevel SeaMAX Ethernet I/O processor for use in the program.
+    ///     Note that this is specific to the Sealevel 463E I/O processor.
+    /// </summary>
     class InitializeIO
     {
         public static int StartUp()
@@ -23,7 +26,7 @@ namespace TaskSchedulerOneTimeSealevel
                     WriteLine("Opened the Ethernet I/O processor.");
                 }
 
-                //  do the initial search for modules on the network
+                //  Do the initial search for modules on the network.
                 WriteLine("Beginning scan for modules...");
                 int ModuleCount = GlobalData.SeaMAX_DeviceHandler.SME_SearchForModules();
                 WriteLine("Modules found = {0}", ModuleCount.ToString());
@@ -42,7 +45,7 @@ namespace TaskSchedulerOneTimeSealevel
                 }
 
                 WriteLine(ModuleCount.ToString() + " device(s) found.");
-                //  select the first device found
+                //  Select the first device found.
                 int errorNumber = GlobalData.SeaMAX_DeviceHandler.SME_FirstModule();
                 if (errorNumber < 0)
                 {
@@ -51,7 +54,7 @@ namespace TaskSchedulerOneTimeSealevel
                     return(initCode);
                 }
 
-                //  ping the device to ensure that it is still available
+                //  Ping the device to ensure that it is available.
                 errorNumber = GlobalData.SeaMAX_DeviceHandler.SME_Ping();
                 WriteLine("Ping was successful.");
                 Write("Returned error code {0}....", errorNumber);
@@ -60,8 +63,8 @@ namespace TaskSchedulerOneTimeSealevel
                 else
                     WriteLine("Module responded to request; module is powered and accessible.");
 
-                    //  save the IP address
-                    string ip = "";
+                //  Save the IP address.
+                string ip = "";
                 string netmask = "";
                 string gateway = "";
                 GlobalData.SeaMAX_DeviceHandler.SME_GetNetworkConfig(ref ip, ref netmask, ref gateway);
@@ -109,7 +112,7 @@ namespace TaskSchedulerOneTimeSealevel
 
                 GetPIOSettings(GlobalData.SeaMAX_DeviceHandler);
 
-                //  set up the hardware with presets
+                //  Set up the hardware with presets.
                 GlobalData.SeaMAXpresets = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
                 GlobalData.SeaMAXdirections = [0, 0, 0, 0, 0, 0, 0, 0, 0xff, 0xff, 0xff, 0xff];
                 errorNumber = GlobalData.SeaMAX_DeviceHandler.SM_SetPIOPresets(GlobalData.SeaMAXpresets);
@@ -133,14 +136,14 @@ namespace TaskSchedulerOneTimeSealevel
             byte[] direction = new byte[12];
             byte[] presets = new byte[12];
 
-            // Get the PIO Direction
+            // Get the PIO Direction.
             int errno = SeaMAX_DeviceHandler.SM_GetPIODirection(direction);
             if (errno < 0)
             {
                 throw new Exception("Retrieving PIO Directions failed with " + errno.ToString());
             }
 
-            // 0 = 8 outputs, nonzero = 8 inputs
+            // 0 = 8 outputs, nonzero = 8 inputs.
             WriteLine("\nDirection: 12 11 10  9  8  7  6  5  4  3  2  1     nonzero = inputs, 0 = outputs");
             Write("           ");
             for (int i = direction.Length - 1; i >= 0; i--)
@@ -149,14 +152,14 @@ namespace TaskSchedulerOneTimeSealevel
             }
             WriteLine();
 
-            // Get the PIO output presets
+            // Get the PIO output presets.
             errno = SeaMAX_DeviceHandler.SM_GetPIOPresets(presets);
             if (errno < 0)
             {
                 throw new Exception("Retrieving PIO Output Presets failed with " + errno.ToString());
             }
 
-            //0 = 8 outputs, nonzero = 8 inputs
+            //0 = 8 outputs, nonzero = 8 inputs.
             WriteLine("Presets:   12 11 10  9  8  7  6  5  4  3  2  1     1 = on, 0 = off");
             Write("           ");
             for (int i = presets.Length - 1; i >= 0; i--)
@@ -170,12 +173,12 @@ namespace TaskSchedulerOneTimeSealevel
         {
             int errorCode;
 
-            //	Reset the twelve digital output ports to OFF
+            //	Reset the twelve digital output ports to OFF.
             errorCode = GlobalData.SeaMAX_DeviceHandler.SM_WritePIO([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
             if (errorCode < 0)
                 WriteLine("\n\nWriting the digital outputs returned error code: {0}", errorCode);
 
-            //  Deallocate the memory used by the Ethernet API
+            //  Deallocate the memory used by the Ethernet API.
             if (GlobalData.SeaMAX_DeviceHandler.IsEthernetInitialized)
             {
                 if (GlobalData.SeaMAX_DeviceHandler.SME_Cleanup() == 0)
@@ -183,7 +186,7 @@ namespace TaskSchedulerOneTimeSealevel
                 else
                     WriteLine("\nUnable to deinitialize the I/O processor. Invalid handle.");
             }
-            //  Close the SeaMAX instance when done
+            //  Close the SeaMAX instance when done.
             if (GlobalData.SeaMAX_DeviceHandler.IsSeaMAXOpen)
             {
                 GlobalData.SeaMAX_DeviceHandler.SM_Close();

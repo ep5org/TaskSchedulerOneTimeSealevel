@@ -13,7 +13,7 @@ namespace TaskSchedulerOneTimeSealevel
             int xfr;
             int portNumber;
 
-            for (portNumber = 0; portNumber < 8; portNumber++)
+            for (portNumber = 0; portNumber < 6; portNumber++)
             {
                 GlobalData.SeaMAXdata[portNumber] = 0;
                 for (int i = 0; i < 8; i++)
@@ -51,12 +51,12 @@ namespace TaskSchedulerOneTimeSealevel
                     case 5:
                         WriteLine("Port C2 = {0}", GlobalData.SeaMAXdata[portNumber]);
                         break;
-                    case 6:
-                        WriteLine("Port A3 = {0}", GlobalData.SeaMAXdata[portNumber]);
-                        break;
-                    case 7:
-                        WriteLine("Port B3 = {0}", GlobalData.SeaMAXdata[portNumber]);
-                        break;
+                    //case 6:
+                    //    WriteLine("Port A3 = {0}", GlobalData.SeaMAXdata[portNumber]);
+                    //    break;
+                    //case 7:
+                    //    WriteLine("Port B3 = {0}", GlobalData.SeaMAXdata[portNumber]);
+                    //    break;
                 }
             }
             //  write full machine state image to I/O processor
@@ -67,7 +67,7 @@ namespace TaskSchedulerOneTimeSealevel
                 _ = ReadKey();
             }
             /// <remarks>
-            ///     0	Successful completion.
+            ///      0	Successful completion.
             ///     -1  Invalid SeaMAX handle.
             ///     -2  Connection is not established. Check the provided Connection object state.
             ///     -3  Read error waiting for response. Unknown Modbus exception.

@@ -22,13 +22,9 @@
 *    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                                                      *
 *******************************************************************************************************************************************************/
 
-//  Written/updated 6 January 2026 by David Fisher
+//  Written/updated 8 January 2026 by David Fisher
 //  Copyright © 2025, 2026 by The ep5 Educational Broadcasting Foundation; all rights reserved
 
-
-using Microsoft.Data.SqlClient;
-using System.Diagnostics;
-using static System.Console;
 
 namespace TaskSchedulerOneTimeSealevel
 {
@@ -56,9 +52,6 @@ namespace TaskSchedulerOneTimeSealevel
 
     internal class Program
     {
-        const int ON = 1; 
-        const int OFF = 0;
-
         static int Main()
         {
             SetupTheUI.SetupUI();

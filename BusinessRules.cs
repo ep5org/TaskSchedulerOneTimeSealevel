@@ -75,7 +75,7 @@ namespace TaskSchedulerOneTimeSealevel
                 {
                     return erratum;
                 }
-                // check for operator interrupt/quit
+                // Check for operator interrupt/quit.
                 if (KeyAvailable)
                 {
                     char c = ReadKey(true).KeyChar;

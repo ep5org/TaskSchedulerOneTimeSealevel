@@ -1,6 +1,7 @@
 ﻿using static System.Console;
 
-namespace TaskSchedulerOneTimeSealevel{
+namespace TaskSchedulerOneTimeSealevel
+{
     public class SetupTheUI
     {
         /// <summary>
@@ -14,7 +15,7 @@ namespace TaskSchedulerOneTimeSealevel{
             {
                 SetWindowPosition(WindowLeft, WindowTop);
                 SetWindowSize(100, 34);
-                // SetWindowSize(LargestWindowWidth, LargestWindowHeight);
+                //  SetWindowSize(LargestWindowWidth, LargestWindowHeight);
             }
             BackgroundColor = ConsoleColor.Blue;
             ForegroundColor = ConsoleColor.White;
