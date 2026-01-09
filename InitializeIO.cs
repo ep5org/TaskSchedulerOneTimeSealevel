@@ -136,14 +136,14 @@ namespace TaskSchedulerOneTimeSealevel
             byte[] direction = new byte[12];
             byte[] presets = new byte[12];
 
-            // Get the PIO Direction.
+            //  Get the PIO Direction.
             int errno = SeaMAX_DeviceHandler.SM_GetPIODirection(direction);
             if (errno < 0)
             {
                 throw new Exception("Retrieving PIO Directions failed with " + errno.ToString());
             }
 
-            // 0 = 8 outputs, nonzero = 8 inputs.
+            //  0 = 8 outputs, nonzero = 8 inputs.
             WriteLine("\nDirection: 12 11 10  9  8  7  6  5  4  3  2  1     nonzero = inputs, 0 = outputs");
             Write("           ");
             for (int i = direction.Length - 1; i >= 0; i--)
@@ -152,15 +152,15 @@ namespace TaskSchedulerOneTimeSealevel
             }
             WriteLine();
 
-            // Get the PIO output presets.
+            //  Get the PIO output presets.
             errno = SeaMAX_DeviceHandler.SM_GetPIOPresets(presets);
             if (errno < 0)
             {
                 throw new Exception("Retrieving PIO Output Presets failed with " + errno.ToString());
             }
 
-            //0 = 8 outputs, nonzero = 8 inputs.
-            WriteLine("Presets:   12 11 10  9  8  7  6  5  4  3  2  1     1 = on, 0 = off");
+            //  0 = 8 outputs, nonzero = 8 inputs.
+            WriteLine("Presets:   12 11 10  9  8  7  6  5  4  3  2  1     1 = ON, 0 = OFF");
             Write("           ");
             for (int i = presets.Length - 1; i >= 0; i--)
             {
@@ -169,14 +169,19 @@ namespace TaskSchedulerOneTimeSealevel
             WriteLine("\n");
         }
 
-        public static void ShutDown()
+        public static int ShutDown()
         {
             int errorCode;
 
-            //	Reset the twelve digital output ports to OFF.
+            //	Reset the five digital output ports to OFF.
             errorCode = GlobalData.SeaMAX_DeviceHandler.SM_WritePIO([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
             if (errorCode < 0)
+            {
                 WriteLine("\n\nWriting the digital outputs returned error code: {0}", errorCode);
+                return -4;
+            }
+            else
+                WriteLine("\nAll digital outputs have been turned OFF.\n");
 
             //  Deallocate the memory used by the Ethernet API.
             if (GlobalData.SeaMAX_DeviceHandler.IsEthernetInitialized)
@@ -184,16 +189,23 @@ namespace TaskSchedulerOneTimeSealevel
                 if (GlobalData.SeaMAX_DeviceHandler.SME_Cleanup() == 0)
                     WriteLine("\nThe Ethernet I/O processor has been closed.");
                 else
+                {
                     WriteLine("\nUnable to deinitialize the I/O processor. Invalid handle.");
+                    return -2;
+                }
             }
             //  Close the SeaMAX instance when done.
             if (GlobalData.SeaMAX_DeviceHandler.IsSeaMAXOpen)
             {
                 GlobalData.SeaMAX_DeviceHandler.SM_Close();
                 WriteLine("Dr SeaMAX has left the building.");
+                return 0;
             }
             else
+            {
                 WriteLine("SeaMAX appears not to be open...");
+                return -3;
+            }
         }
     }
 }

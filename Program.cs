@@ -22,7 +22,7 @@
 *    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                                                      *
 *******************************************************************************************************************************************************/
 
-//  Written/updated 8 January 2026 by David Fisher
+//  Written/updated 9 January 2026 by David Fisher
 //  Copyright © 2025, 2026 by The ep5 Educational Broadcasting Foundation; all rights reserved
 
 
@@ -47,7 +47,7 @@ namespace TaskSchedulerOneTimeSealevel
     ///     Consider restructuring the program to fit the ep5BAS modular design pattern for better maintainability and adaptability to other I/O processors.
     ///     <i>Consider combining the data entry project with this project to create a unified application for both scheduling and executing events.</i>
     ///     Consider adding functionality to process inputs from the digital I/O. This would be effected in BusinessRules().
-    ///         NOTE: This has been rejected, as this program is not intended to be responsive. Its function is to run a pre-defined recipe and then exit.
+    ///         NOTE: This has been rejected, as this program is not intended to be responsive. Its function is to run a pre-defined recipe once and then exit.
     /// </todo>
 
     internal class Program
@@ -55,10 +55,11 @@ namespace TaskSchedulerOneTimeSealevel
         static int Main()
         {
             SetupTheUI.SetupUI();
-            InitializeIO.StartUp();
+            if (InitializeIO.StartUp() != 0)
+                return -1;
             if (BusinessRules.ApplyBusinessRules() != 0)
                 return -9;
-            SelectedOutputs.TurnOnSelectedOutputs();        // This forces all outputs to OFF.
+            SelectedOutputs.ToggleSelectedOutputs();        // This forces all outputs to OFF.
             InitializeIO.ShutDown();
             return 0;
         }

@@ -23,7 +23,7 @@ namespace TaskSchedulerOneTimeSealevel
             else
                 GlobalData.machineState[channelNmbr] = OFF;
             WriteLine("Output channel is {0}", GlobalData.machineState[channelNmbr]);
-            _ = SelectedOutputs.TurnOnSelectedOutputs();
+            _ = SelectedOutputs.ToggleSelectedOutputs();
             return 0;
         }
     }

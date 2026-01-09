@@ -4,7 +4,7 @@ namespace TaskSchedulerOneTimeSealevel
 {
     internal class SelectedOutputs
     {
-        public static int TurnOnSelectedOutputs()
+        public static int ToggleSelectedOutputs()
         {
             const int ON = 1;
             const int OFF = 0;
