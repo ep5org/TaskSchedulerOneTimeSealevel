@@ -12,7 +12,7 @@ namespace TaskSchedulerOneTimeSealevel
         public static int StartUp()
         {
             int SUCCESS = 0;
-            int initCode = SUCCESS;
+            int errorCode = SUCCESS;
 
             WriteLine("Initializing the I/O...");
             Array.Clear(GlobalData.machineState);
@@ -35,13 +35,13 @@ namespace TaskSchedulerOneTimeSealevel
                     WriteLine("No I/O devices were found.");
                     WriteLine("Press the <ANY> key to continue....");
                     _ = ReadKey();
-                    return(initCode);
+                    return(errorCode);
                 }
                 else if (ModuleCount < 0)
                 {
                     WriteLine("Error " + ModuleCount.ToString() + " searching for devices.");
                     _ = ReadKey();
-                    return(initCode);
+                    return(errorCode);
                 }
 
                 WriteLine(ModuleCount.ToString() + " device(s) found.");
@@ -51,7 +51,7 @@ namespace TaskSchedulerOneTimeSealevel
                 {
                     WriteLine("Error selecting first device.");
                     _ = ReadKey();
-                    return(initCode);
+                    return(errorCode);
                 }
 
                 //  Ping the device to ensure that it is available.
@@ -59,7 +59,7 @@ namespace TaskSchedulerOneTimeSealevel
                 WriteLine("Ping was successful.");
                 Write("Returned error code {0}....", errorNumber);
                 if (errorNumber != 1)
-                    return (initCode);
+                    return (errorCode);
                 else
                     WriteLine("Module responded to request; module is powered and accessible.");
 
@@ -71,7 +71,7 @@ namespace TaskSchedulerOneTimeSealevel
                 if (errorNumber < 1)
                 {
                     WriteLine("The device at " + ip + " failed to respond.");
-                    return(initCode);
+                    return(errorCode);
                 }
 
                 string name = "";
@@ -79,7 +79,7 @@ namespace TaskSchedulerOneTimeSealevel
                 if (errorNumber < 0)
                 {
                     WriteLine("Could not retrieve name of device at " + ip);
-                    return(initCode);
+                    return(errorCode);
                 }
 
                 WriteLine("\nThe I/O processor at " + ip + " is identified as " + name + ".");
@@ -100,6 +100,7 @@ namespace TaskSchedulerOneTimeSealevel
                 if (errorNumber < 0)
                 {
                     WriteLine("Get firmware error = " + errorNumber + ".");
+                    return(errorCode);
                 }
                 else
                 {
@@ -128,7 +129,7 @@ namespace TaskSchedulerOneTimeSealevel
             {
 
             }
-            return(initCode);
+            return(errorCode);
         }
 
         private static void GetPIOSettings(SeaMAX SeaMAX_DeviceHandler)
